@@ -1,4 +1,5 @@
 # CNProject
 
 Final project for Computer Networks course<br/>
-The project provides a C implementation for a concurent server and client that manages train traffic based on client input
+This project aims to provide a C implementation for a concurrent server that manages train traffic information requests<br/>
+and a client that queries the server for information
