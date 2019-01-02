@@ -12,7 +12,7 @@ typedef struct _command {
    STAILQ_ENTRY(_command) cmd_pointers;
 }cmd;
 
-STAILQ_HEAD(command_queue, command);
+STAILQ_HEAD(command_queue, _command);
 struct command_queue g_command_queue;
 pthread_mutex_t g_command_queue_lock;
 

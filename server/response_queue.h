@@ -3,12 +3,21 @@
                                            
 #include <stdlib.h>
 #include <string.h>                                            
+#include <pthread.h>
 #include <sys/queue.h>   
 
-typedef struct response_queue {
-    char response[256];
-    STAILQ_ENTRY(rqueue) pointers;
-}rqueue;
-void enqueue_response(void *eq);
-void dequeue_response(void *eq, char* response);
+typedef struct _response {
+   int cli_sd;
+   char *msg;
+   STAILQ_ENTRY(_response) resp_pointers;
+}resp;
+
+STAILQ_HEAD(response_queue, _response);
+struct response_queue g_response_queue;
+pthread_mutex_t g_response_queue_lock;
+
+
+void init_response_que();
+void enqueue_response(void *server_response);
+void dequeue_response(resp *output_response);
 #endif
