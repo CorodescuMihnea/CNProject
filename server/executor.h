@@ -4,19 +4,14 @@
 #include <pthread.h>
 #include <libxml/parser.h>
 
-#include "command.h"
+#include "command_queue.h"
+#include "response_queue.h"
+#include "utils"
 
-typedef struct command {
-    int cl_id;
-    char *commmand;
-}cmd;
+int executor_init(void *cmd_q, void *resp_q);
 
-typedef struct executor_queue {
-    cmd cmd_queue;
-    pthread_mutex_t lock;
-}equeue;
-
+int execute_command(int cmd_no);
 void update_train_delay(void *train_table );
-void * get_next_departures(void *train_table);
-void * get_next_arrivals(void *train_table);
+void get_next_departures(void *train_table);
+void get_next_arrivals(void *train_table);
 #endif
