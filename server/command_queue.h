@@ -13,11 +13,11 @@ typedef struct _command {
 }cmd;
 
 STAILQ_HEAD(command_queue, command);
-command_queue g_command_queue;
+struct command_queue g_command_queue;
 pthread_mutex_t g_command_queue_lock;
 
 
-void init_command_que(command cmd);
+void init_command_que();
 void enqueue_command(void *client_command);
-void dequeue_command(char **command);
+void dequeue_command(cmd *output_command);
 #endif
