@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define MAX_STRING_LENGTH 255
+#define MAX_STRING_LENGTH 256
 #define MAX_TOKS 100
 #define DELIMITERS " \t"
 
@@ -20,7 +20,7 @@ int main() {
 
   gets(S);
 
-  n = parseString(S, &A);  
+  n = parse_string(S, &A);  
 
   printf("strings read:\t%d\n",n);
   
@@ -28,6 +28,6 @@ int main() {
     printf("A[%d] = %s\n",i,A[i]);
 
 }*/
-int parseString(char* line, char*** argv);
+int parse_string(char* line, char*** argv);
 
 #endif

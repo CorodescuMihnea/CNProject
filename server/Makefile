@@ -5,7 +5,7 @@ INC = $(INCLUDES) $(LIBINCLUDES)
 CFLAGS = -Wall
 LIBS = -lpthread -lxml2
 
-OBJS = command.o executor.o serv.o command_queue.o response_queue.o utils.o
+OBJS = executor.o serv.o command_queue.o response_queue.o utils.o
 TARGET = server
 
 all : $(TARGET)

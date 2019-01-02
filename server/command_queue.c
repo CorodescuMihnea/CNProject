@@ -1,6 +1,6 @@
 #include "command_queue.h"
 
-void init_command_que() {
+void init_command_queue() {
     STAILQ_INIT(&g_command_queue);
     pthread_mutex_init(&g_command_queue_lock, NULL);
 }

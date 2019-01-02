@@ -1,6 +1,6 @@
 #include "response_queue.h"
 
-void init_response_que() {
+void init_response_queue() {
     STAILQ_INIT(&g_response_queue);
     pthread_mutex_init(&g_response_queue_lock, NULL);
 }

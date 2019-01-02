@@ -17,7 +17,7 @@ struct response_queue g_response_queue;
 pthread_mutex_t g_response_queue_lock;
 
 
-void init_response_que();
+void init_response_queue();
 void enqueue_response(void *server_response);
 void dequeue_response(resp *output_response);
 #endif

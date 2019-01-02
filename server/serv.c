@@ -18,19 +18,17 @@
 #include "executor.h"
 #include "utils.h"
 
-/* portul folosit */
 #define PORT 2908
 #define NOF_ACCEPTABLE_CLIENT_REQUESTS 50
 
-/* codul de eroare returnat de anumite apeluri */
 extern int errno;
 
 typedef struct ClientThrdData
 {
     int thread_id;
     int cl;       //client descriptor returned by accept
-    cqueue *command_q;
-    rqueue *response_q;
+    struct command_queue *command_q;
+    struct response_queue *response_q;
 } ClientThrdData;
 
 static void *treat(void *);
@@ -42,9 +40,9 @@ int main()
     struct sockaddr_in from;
     int sd; //socket descriptor
     int pid;
-    pthread_t client_thrd[NOF_ACCEPTABLE_CLIENT_REQUESTS]; //Client thread identifiers
-    pthread_t worker_thrd; // Thread that listens and executes commands from the queueu 
-    int thrd_cnt = 0; //Thread counter
+    pthread_t client_thread[NOF_ACCEPTABLE_CLIENT_REQUESTS]; //Client thread identifiers
+    pthread_t executor_thread; // Thread that listens and executes commands from the queueu 
+    int thread_cnt = 0; //Thread counter
 
     /* Create the server socket */
     if ((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
@@ -79,9 +77,7 @@ int main()
         return errno;
     }
     /* Start the executor */
-    cqueue *cq;
-    rqueue *rq;
-    if (executor_init(rq, cq) == 0) {
+    if (executor_init() == 0) {
         perror("[server]Failed starting the executor.\n");
         return errno;
     }
@@ -106,12 +102,10 @@ int main()
 
         /* Assign a thread for each client */
         td = (struct ClientThrdData *)malloc(sizeof(struct ClientThrdData));
-        td->thrd_cnt = i++;
+        td->thread_id = thread_cnt++;
         td->cl = client;
-        td->command_q = cq;
-        td->response_q = rq;
 
-        pthread_create(&client_thrd[thrd_cnt], NULL, &treat_client, td);
+        pthread_create(&client_thread[thread_cnt], NULL, &treat_client, td);
     }
 }
 
@@ -134,7 +128,7 @@ static void *treat_client(void *arg)
 void answear(void *arg)
 {
     int nr, i = 0;
-    char client_msg[CLI_MSG_SIZE];
+    char client_msg[MAX_STRING_LENGTH];
     char *resp;
     ClientThrdData tdL;
     tdL = *((struct ClientThrdData *)arg);
@@ -142,18 +136,17 @@ void answear(void *arg)
     if (read(tdL.cl, client_msg, sizeof(client_msg)) <= 0)
     {
         printf("[Thread %d]\n", tdL.thread_id);
-        perror("Eroare la read() de la client.\n");
+        perror("Error read()ing from client.\n");
     }
-    /* Parse the command and add it to the executor que*/
+    /* Parse the command and add it to the executor queue*/
 
     /* Prepare the response */
-    printf("[Thread %d]Trimitem mesajul inapoi...%s\n", tdL.thread_id, resp);
 
     /* Send the response to the client */
     if (write(tdL.cl, resp, sizeof(resp)) <= 0)
     {
         printf("[Thread %d] ", tdL.thread_id);
-        perror("[Thread]Error at write() to the client\n");
+        perror("[Thread]Error write()ing to the client\n");
     }
     else
         printf("[Thread %d]Response successfully sent.\n", tdL.thread_id);
