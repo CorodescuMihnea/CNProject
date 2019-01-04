@@ -13,11 +13,15 @@ void enqueue_command(void *client_command) {
     pthread_mutex_unlock(&g_command_queue_lock); 
 }
 
-void dequeue_command(cmd *output_command) {
+int dequeue_command(cmd *output_command) {
     pthread_mutex_lock(&g_command_queue_lock); 
     if(!STAILQ_EMPTY(&g_command_queue)) {
         output_command = STAILQ_FIRST(&g_command_queue);
         STAILQ_REMOVE_HEAD(&g_command_queue, cmd_pointers);
     }
+    else {
+        return 0;
+    }
     pthread_mutex_unlock(&g_command_queue_lock); 
+    return 1;
 }

@@ -1,9 +1,3 @@
-// For thread safety 
-// pthread_mutex_lock(&lock); 
-// pthread_mutex_unlock(&lock);
-// pthread_mutex_t lock; 
-// pthread_mutex_init(&lock, NULL)
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -23,19 +17,15 @@
 
 extern int errno;
 
-typedef struct ClientThrdData
-{
+typedef struct ClientThrdData {
     int thread_id;
     int cl;       //client descriptor returned by accept
-    struct command_queue *command_q;
-    struct response_queue *response_q;
 } ClientThrdData;
 
-static void *treat(void *);
+static void *treat_client(void *);
 void answear(void *);
 
-int main()
-{
+int main() {
     struct sockaddr_in server; //structure used by server
     struct sockaddr_in from;
     int sd; //socket descriptor
@@ -45,8 +35,7 @@ int main()
     int thread_cnt = 0; //Thread counter
 
     /* Create the server socket */
-    if ((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-    {
+    if ((sd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         perror("[server]Error creating server socket().\n");
         return errno;
     }
@@ -64,28 +53,22 @@ int main()
     server.sin_port = htons(PORT);
 
     /* Bind the socket */
-    if (bind(sd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1)
-    {
+    if (bind(sd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1) {
         perror("[server]Error at bind().\n");
         return errno;
     }
 
     /* Listen for clients */
-    if (listen(sd, 2) == -1)
-    {
+    if (listen(sd, 2) == -1) {
         perror("[server]Error la listen().\n");
         return errno;
     }
     /* Start the executor */
-    if (executor_init() == 0) {
-        perror("[server]Failed starting the executor.\n");
-        return errno;
-    }
+    executor_init();
     /* Concurrently serve clients using threads */
     /* Client connections are not kept alive*/  
 
-    while (1)
-    {
+    while (1) {
         int client;
         ClientThrdData *td;
         int length = sizeof(from);
@@ -94,8 +77,7 @@ int main()
         fflush(stdout);
 
         /* Accepting a client  */
-        if ((client = accept(sd, (struct sockaddr *)&from, &length)) < 0)
-        {
+        if ((client = accept(sd, (struct sockaddr *)&from, &length)) < 0) {
             perror("[server]Error at accept().\n");
             continue;
         }
@@ -109,8 +91,7 @@ int main()
     }
 }
 
-static void *treat_client(void *arg)
-{
+static void *treat_client(void *arg) {
     ClientThrdData client_thrd;
     client_thrd = *((struct ClientThrdData *)arg);
 
@@ -125,26 +106,23 @@ static void *treat_client(void *arg)
     return (NULL);
 }
 
-void answear(void *arg)
-{
+void answear(void *arg) {
     int nr, i = 0;
     char client_msg[MAX_STRING_LENGTH];
     char *resp;
     ClientThrdData tdL;
     tdL = *((struct ClientThrdData *)arg);
     /* Read a command from the client */
-    if (read(tdL.cl, client_msg, sizeof(client_msg)) <= 0)
-    {
+    if (read(tdL.cl, client_msg, sizeof(client_msg)) <= 0) {
         printf("[Thread %d]\n", tdL.thread_id);
         perror("Error read()ing from client.\n");
     }
     /* Parse the command and add it to the executor queue*/
-
+    
     /* Prepare the response */
 
     /* Send the response to the client */
-    if (write(tdL.cl, resp, sizeof(resp)) <= 0)
-    {
+    if (write(tdL.cl, resp, sizeof(resp)) <= 0) {
         printf("[Thread %d] ", tdL.thread_id);
         perror("[Thread]Error write()ing to the client\n");
     }

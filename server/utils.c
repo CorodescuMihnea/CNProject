@@ -1,12 +1,12 @@
 #include "utils.h"
-int parse_string(char* line, char*** argv) {
+int parse_string(char *line, char ***argv) {
 
-  char* buffer;
+  char *buffer;
   int argc;
 
-  buffer = (char*) malloc(strlen(line) * sizeof(char));
+  buffer = (char *) malloc(strlen(line) * sizeof(char));
   strcpy(buffer,line);
-  (*argv) = (char**) malloc(MAX_TOKS * sizeof(char**));
+  (*argv) = (char **) malloc(MAX_TOKS * sizeof(char**));
 
   argc = 0;  
   (*argv)[argc++] = strtok(buffer, DELIMITERS);

@@ -19,5 +19,5 @@ pthread_mutex_t g_command_queue_lock;
 
 void init_command_queue();
 void enqueue_command(void *client_command);
-void dequeue_command(cmd *output_command);
+int dequeue_command(cmd *output_command);
 #endif

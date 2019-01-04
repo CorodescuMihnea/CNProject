@@ -28,6 +28,8 @@ int main() {
     printf("A[%d] = %s\n",i,A[i]);
 
 }*/
-int parse_string(char* line, char*** argv);
+int parse_string(char *line, char ***argv);
+void parse_client_command(char *message, cmd *parsed_cmd);
+
 
 #endif
