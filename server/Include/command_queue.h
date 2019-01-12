@@ -6,9 +6,11 @@
 #include <sys/queue.h> 
 #include <pthread.h>
 
+#define DELAY ""
+
 typedef struct _command {
    int cmd_no;
-   char *args;
+   char **args;
    STAILQ_ENTRY(_command) cmd_pointers;
 }cmd;
 

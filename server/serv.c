@@ -31,7 +31,7 @@ int main() {
     int sd; //socket descriptor
     int pid;
     pthread_t client_thread[NOF_ACCEPTABLE_CLIENT_REQUESTS]; //Client thread identifiers
-    pthread_t executor_thread; // Thread that listens and executes commands from the queueu 
+    pthread_t executor_thread; // Thread that listens and executes commands from the queue
     int thread_cnt = 0; //Thread counter
 
     /* Create the server socket */

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "command_queue.h"
 
 #define MAX_STRING_LENGTH 256
 #define MAX_TOKS 100
@@ -29,7 +30,7 @@ int main() {
 
 }*/
 int parse_string(char *line, char ***argv);
-void parse_client_command(char *message, cmd *parsed_cmd);
+void parse_command(char *client_req, cmd *c);
 
 
 #endif

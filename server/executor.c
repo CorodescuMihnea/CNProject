@@ -18,6 +18,7 @@ static void parse_and_execute(void *arg) {
         resp command_response;
         dequeue_command(&executable_cmd);
         execute_command(executable_cmd.cmd_no, &command_response.msg);
+        
     }
 }
 static void respond(void *arg);
