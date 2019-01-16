@@ -10,7 +10,8 @@ void enqueue_command(void *client_command) {
     cli_cmd = (cmd *)client_command;
     pthread_mutex_lock(&g_command_queue_lock); 
     STAILQ_INSERT_TAIL(&g_command_queue, cli_cmd, cmd_pointers); 
-    pthread_mutex_unlock(&g_command_queue_lock); 
+    pthread_mutex_unlock(&g_command_queue_lock);
+    return 1;
 }
 
 int dequeue_command(cmd *output_command) {

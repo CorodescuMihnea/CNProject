@@ -65,6 +65,7 @@ int main() {
     }
     /* Start the executor */
     executor_init();
+
     /* Concurrently serve clients using threads */
     /* Client connections are not kept alive*/  
 
@@ -82,7 +83,7 @@ int main() {
             continue;
         }
 
-        /* Assign a thread for each client */
+        /* Assigning a thread for each client */
         td = (struct ClientThrdData *)malloc(sizeof(struct ClientThrdData));
         td->thread_id = thread_cnt++;
         td->cl = client;
@@ -106,31 +107,7 @@ static void *treat_client(void *arg) {
     return (NULL);
 }
 
-void answear(void *arg) {
-    int nr, i = 0;
-    char client_msg[MAX_STRING_LENGTH];
-    char *resp;
-    ClientThrdData tdL;
-    tdL = *((struct ClientThrdData *)arg);
-    /* Read a command from the client */
-    if (read(tdL.cl, client_msg, sizeof(client_msg)) <= 0) {
-        printf("[Thread %d]\n", tdL.thread_id);
-        perror("Error read()ing from client.\n");
-    }
-    /* Parse the command and add it to the executor queue*/
-    
-    /* Prepare the response */
-
-    /* Send the response to the client */
-    if (write(tdL.cl, resp, sizeof(resp)) <= 0) {
-        printf("[Thread %d] ", tdL.thread_id);
-        perror("[Thread]Error write()ing to the client\n");
-    }
-    else
-        printf("[Thread %d]Response successfully sent.\n", tdL.thread_id);
-}
-
-int close_client_desc(void * cl) {
+int close_client_descriptor(void * cl) {
     ClientThrdData cl_thrd_data;
     cl_thrd_data = *((ClientThrdData *) cl);
     return close(cl_thrd_data.cl);

@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "command_queue.h"
+
 int parse_string(char *line, char ***argv) {
 
 	char *buffer;
@@ -33,7 +34,11 @@ void parse_command(char *client_req, cmd *c) {
 	}
 
 	int it;
+	c->args = malloc(nof_strings -1 );
+
 	for(it=1; it < nof_strings; it++) {
-		c->args[it] = split_client_req[it];
+		c->args[it] = malloc(sizeof(split_client_req[it]));
+		strncpy(c->args[it], split_client_req[it], sizeof(split_client_req[it]));
 	}
+
 }

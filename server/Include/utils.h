@@ -9,6 +9,7 @@
 #define MAX_STRING_LENGTH 256
 #define MAX_TOKS 100
 #define DELIMITERS " \t"
+#define MAX_COMMAND_ARG_SIZE 20
 
 /* Splits string into an array of strings, return value is number of strings*/
 /* Example usage:
