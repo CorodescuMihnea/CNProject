@@ -22,14 +22,14 @@ void parse_command(char *client_req, cmd *c) {
 	char **split_client_req;
 	int nof_strings;
 	nof_strings = parse_string(client_req, &split_client_req);
-	if(strncmp(split_client_req[0], "delay", sizeof("delay")) == 0) {
+
+	if(strncmp(split_client_req[0], "delay", strlen("delay")) == 0) {
 		c->cmd_no = 0;
 	}
-	else if(strncmp(split_client_req[0], "arrivals", sizeof("arrivals")) == 0) {
+	else if(strncmp(split_client_req[0], "arrivals", strlen("arrivals")) == 0) {
 		c->cmd_no = 1;
-
 	}
-	else if(strncmp(split_client_req[0], "departures", sizeof("departures")) == 0) {
+	else if(strncmp(split_client_req[0], "departures", strlen("departures")) == 0) {
 		c->cmd_no = 2;
 	}
 

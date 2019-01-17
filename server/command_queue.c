@@ -11,16 +11,18 @@ void enqueue_command(void *client_command) {
     pthread_mutex_lock(&g_command_queue_lock); 
     STAILQ_INSERT_TAIL(&g_command_queue, cli_cmd, cmd_pointers); 
     pthread_mutex_unlock(&g_command_queue_lock);
-    return 1;
+    return;
 }
 
 int dequeue_command(cmd *output_command) {
     pthread_mutex_lock(&g_command_queue_lock); 
     if(!STAILQ_EMPTY(&g_command_queue)) {
         output_command = STAILQ_FIRST(&g_command_queue);
+        printf("[Executor.executing_thread] Dequeued command %d from client with sd %d\n", output_command->cmd_no, output_command->cli_sd);
         STAILQ_REMOVE_HEAD(&g_command_queue, cmd_pointers);
     }
     else {
+        pthread_mutex_unlock(&g_command_queue_lock); 
         return 0;
     }
     pthread_mutex_unlock(&g_command_queue_lock); 

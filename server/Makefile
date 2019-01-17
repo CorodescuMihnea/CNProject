@@ -2,7 +2,7 @@ CC = /usr/bin/gcc
 INCLUDES = -I/usr/include -I/usr/include/libxml2 -I. -IInclude/
 LIBINCLUDES = -L/usr/lib
 INC = $(INCLUDES) $(LIBINCLUDES) 
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 LIBS = -lpthread -lxml2 -pthread
 
 OBJS = executor.o serv.o command_queue.o response_queue.o utils.o

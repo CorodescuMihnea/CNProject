@@ -2,8 +2,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
-#include <unistd.h>
-#include <stdio.h>
+// #include <unistd.h>
+// #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -29,9 +29,7 @@ int main() {
     struct sockaddr_in server; //structure used by server
     struct sockaddr_in from;
     int sd; //socket descriptor
-    int pid;
     pthread_t client_thread[NOF_ACCEPTABLE_CLIENT_REQUESTS]; //Client thread identifiers
-    pthread_t executor_thread; // Thread that listens and executes commands from the queue
     int thread_cnt = 0; //Thread counter
 
     /* Create the server socket */
@@ -93,22 +91,28 @@ int main() {
 }
 
 static void *treat_client(void *arg) {
-    ClientThrdData client_thrd;
-    client_thrd = *((struct ClientThrdData *)arg);
+    ClientThrdData *client_thrd;
+    client_thrd = (struct ClientThrdData *) arg;
 
-    printf("[thread]- %d - Waiting input from thread...\n", client_thrd.thread_id);
+    char client_msg_buff[256];
+    memset(client_msg_buff, 0, sizeof(client_msg_buff));
+
+    printf("[thread]- %d - Reading command from client\n", client_thrd->thread_id);
     fflush(stdout);
+    int ret;
+    ret = read(client_thrd->cl, client_msg_buff, sizeof(client_msg_buff));
+    printf("[thread] Read from client %d bytes\n", ret);
+    // client_msg_buff[ret -1] = '\0;
+    printf("[thread]- %d - Read command %s from client\n", client_thrd->thread_id, client_msg_buff);
 
+    cmd *client_cmd;
+    client_cmd = (cmd *)malloc(sizeof(cmd));
+    memset(client_cmd, 0, sizeof(cmd));
+    client_cmd->cli_sd = client_thrd->cl;
+
+    parse_command(client_msg_buff, client_cmd);
+    enqueue_command(client_cmd);
+    
     pthread_detach(pthread_self());
-
-    answear((ClientThrdData *)arg);
-    /* Done with this client, close the connection */
-    close_client_desc(arg);
     return (NULL);
-}
-
-int close_client_descriptor(void * cl) {
-    ClientThrdData cl_thrd_data;
-    cl_thrd_data = *((ClientThrdData *) cl);
-    return close(cl_thrd_data.cl);
 }

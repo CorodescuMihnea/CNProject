@@ -13,11 +13,17 @@ void enqueue_response(void *server_response) {
     pthread_mutex_unlock(&g_response_queue_lock); 
 }
 
-void dequeue_response(resp *output_response) {
+int dequeue_response(resp *output_response) {
     pthread_mutex_lock(&g_response_queue_lock); 
     if(!STAILQ_EMPTY(&g_response_queue)) {
         output_response = STAILQ_FIRST(&g_response_queue);
+        printf("[Executor.response_thread]Dequeued response %s intended for client with sd %d\n", output_response->msg, output_response->cli_sd);
         STAILQ_REMOVE_HEAD(&g_response_queue, resp_pointers);
     }
-    pthread_mutex_unlock(&g_response_queue_lock); 
+    else {
+        pthread_mutex_unlock(&g_response_queue_lock);
+        return 0;
+    }
+    pthread_mutex_unlock(&g_response_queue_lock);
+    return 1;
 }

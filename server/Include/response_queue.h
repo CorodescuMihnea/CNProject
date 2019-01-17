@@ -2,7 +2,8 @@
 #define RESPONSE_QUEUE_H
                                            
 #include <stdlib.h>
-#include <string.h>                                            
+#include <string.h>
+#include <stdio.h>                                 
 #include <pthread.h>
 #include <sys/queue.h>   
 
@@ -19,5 +20,5 @@ pthread_mutex_t g_response_queue_lock;
 
 void init_response_queue();
 void enqueue_response(void *server_response);
-void dequeue_response(resp *output_response);
+int dequeue_response(resp *output_response);
 #endif

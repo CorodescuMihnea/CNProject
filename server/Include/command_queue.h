@@ -5,6 +5,7 @@
 #include <string.h>                                            
 #include <sys/queue.h> 
 #include <pthread.h>
+#include <stdio.h>
 
 #define DELAY 0
 #define ARIVALS 1

@@ -3,6 +3,8 @@
 
 #include <pthread.h>
 #include <libxml/parser.h>
+#include <unistd.h>
+#include <stdio.h>
 
 #include "command_queue.h"
 #include "response_queue.h"
@@ -10,8 +12,8 @@
 
 void executor_init();
 
-static void parse_and_execute();
-static void respond();
+void parse_and_execute();
+void respond();
 void execute_command(int cmd_no, char **cmd_response);
 
 void update_train_delay(void *train_table);
