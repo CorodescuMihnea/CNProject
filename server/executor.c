@@ -12,40 +12,58 @@ void executor_init() {
 }
 void parse_and_execute() {
     while(1) {
-        cmd executable_cmd;
+        cmd *executable_cmd;
+        executable_cmd = (cmd *)malloc(sizeof(cmd));
         resp *command_response;
-        command_response = malloc(sizeof(resp));
+        command_response = (resp *)malloc(sizeof(resp));
 
-        if (dequeue_command(&executable_cmd) == 0) {
+        if (dequeue_command(executable_cmd) == 0) {
+            free(command_response);
+            free(executable_cmd);
             continue;
         }
-        command_response->cli_sd = executable_cmd.cli_sd;
-        execute_command(executable_cmd.cmd_no, &command_response->msg);
-        enqueue_response(&command_response);
+
+        command_response->cli_sd = executable_cmd->cli_sd;
+        command_response->msg = (char *) malloc(512);
+
+        execute_command(executable_cmd->cmd_no, executable_cmd->args, command_response->msg);
+        free(executable_cmd);
+        enqueue_response(command_response);
     }
 }
 void respond() {
     while(1) {
-        resp server_response;
+        resp *server_response;
+        server_response = (resp *)malloc(sizeof(resp));
+        server_response->msg = (char *)malloc(512);
 
-        if (dequeue_response(&server_response) == 0) {
+        if (dequeue_response(server_response) == 0) {
+            free(server_response->msg);
+            free(server_response);
             continue;
         }
-        write(server_response.cli_sd, server_response.msg, sizeof(server_response.msg));
-        close(server_response.cli_sd);
+        printf("[Executor.response_thread - Writing '%s' to client\n", server_response->msg);
+        write(server_response->cli_sd, server_response->msg, sizeof(server_response->msg));
+        close(server_response->cli_sd);
+        free(server_response);
     }
 }
-
-void execute_command(int cmd_no, char **cmd_response) {
-    if(cmd_no == DELAY) {
-        *cmd_response = "ok";
+void execute_command(int cmd_no, char **argv, char *cmd_response) {
+    if(cmd_no == DELAY) { 
+        char resp[] = "ok";
+        strcpy(cmd_response, resp);
     }
     else if(cmd_no == ARIVALS) {
-        *cmd_response = "ok";
-
+        char resp[] = "<train>\n</train>\n<train>\n</train>\n<train>\n</train>\n";
+        strcpy(cmd_response, resp);
     }
     else if(cmd_no == DEPARTURES) {
-        *cmd_response = "ok";
+        char resp[] = "<train>\n</train>\n<train>\n</train>\n<train>\n</train>\n";
+        strcpy(cmd_response, resp);
+    }
+    else if(cmd_no == BAD_COMMAND) {
+        char resp[] = "Bad command: available options are [delay 'args']|[arivals]|[departures]";
+        strcpy(cmd_response, resp);
     }
 }
 

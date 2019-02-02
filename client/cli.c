@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <netdb.h>
 #include <string.h>
+#include <arpa/inet.h>
 
 extern int errno;
 
@@ -16,8 +17,6 @@ int main (int argc, char *argv[])
 {
   int sd;			
   struct sockaddr_in server;	
-  int nr=0;
-
 
   if (argc != 3)
     {
@@ -52,9 +51,9 @@ int main (int argc, char *argv[])
   int ret;
   memset(cmd, 0, sizeof(cmd));
   ret = read (0, cmd, sizeof(cmd) - 1);
-  cmd[ret] = '\0';
+  cmd[ret - 1] = '\0';
   
-  printf("Preparing to write %s to server\n", cmd);
+  printf("[client]Writing to server %s\n", cmd);
   fflush(stdout);
 
   if (write (sd, cmd, sizeof(cmd)) <= 0)
@@ -63,15 +62,15 @@ int main (int argc, char *argv[])
       return errno;
     }
 
-  char resp[20];
-  if (ret = read (sd, resp, sizeof(resp) - 1) < 0)
+  char resp[512];
+  if ((ret = read (sd, resp, sizeof(resp) - 1)) <= 0)
     {
       perror ("[client]Error at read() from server.\n");
       return errno;
     }
   resp[ret] = '\0';
 
-  printf ("[client]Server response is: %s\n", resp);
+  printf ("[client]Read %d from server .The response is: %s\n",ret, resp);
 
   close (sd);
 }

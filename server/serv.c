@@ -95,14 +95,13 @@ static void *treat_client(void *arg) {
     client_thrd = (struct ClientThrdData *) arg;
 
     char client_msg_buff[256];
-    memset(client_msg_buff, 0, sizeof(client_msg_buff));
+    memset(client_msg_buff, 0, 256);
 
     printf("[thread]- %d - Reading command from client\n", client_thrd->thread_id);
     fflush(stdout);
     int ret;
     ret = read(client_thrd->cl, client_msg_buff, sizeof(client_msg_buff));
-    printf("[thread] Read from client %d bytes\n", ret);
-    // client_msg_buff[ret -1] = '\0;
+    printf("[thread]- %d - Read from client %d bytes\n", client_thrd->thread_id, ret);
     printf("[thread]- %d - Read command %s from client\n", client_thrd->thread_id, client_msg_buff);
 
     cmd *client_cmd;

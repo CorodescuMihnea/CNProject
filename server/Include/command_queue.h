@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include <stdio.h>
 
+#define BAD_COMMAND -1
 #define DELAY 0
 #define ARIVALS 1
 #define DEPARTURES 2
